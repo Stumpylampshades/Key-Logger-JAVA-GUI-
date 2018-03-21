@@ -70,7 +70,7 @@ public class FileReadWrite {
 	}
 
 	/**
-	 * 
+	 * RESET
 	 */
 	private void resetTable() {
 		deleteTable();
@@ -112,7 +112,8 @@ public class FileReadWrite {
 	 * @param key
 	 */
 	public void addTofile(String key) {
-		System.out.println("adding to file " + key);
+		if(key.equals("Shift"))
+			return;
 		try {
 			FileWriter fileWriter = new FileWriter(keyStrokes, true);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -127,20 +128,6 @@ public class FileReadWrite {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "unable to capture this key");
 		}
-	}
-
-	public int get(String s) {
-		HashMap<String, Integer> keys;
-		try {
-			ObjectInputStream inp = new ObjectInputStream(new FileInputStream(freq));
-			keys = (HashMap<String, Integer>) inp.readObject();
-			if (keys.containsKey(s))
-				return keys.get(s);
-			inp.close();
-		} catch (Exception e) {
-
-		}
-		return 0;
 	}
 
 	public void deleteTable() {

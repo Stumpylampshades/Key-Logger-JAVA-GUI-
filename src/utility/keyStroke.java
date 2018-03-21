@@ -26,7 +26,6 @@ public class keyStroke implements NativeKeyListener {
 	public keyStroke(String path, FileReadWrite op, JTextArea mFeed) {
 		this.op = op;
 		this.mFeed = mFeed;
-		// op = new FileReadWrite(path);
 		mFeed.setText("");
 		lastVisit = System.currentTimeMillis();
 	}
@@ -35,10 +34,10 @@ public class keyStroke implements NativeKeyListener {
 	public void nativeKeyPressed(NativeKeyEvent e) {
 		String addTofeed = "";
 		String key = NativeKeyEvent.getKeyText(e.getKeyCode());
-		
+
 		if (!run)
 			return;
-		
+
 		boolean isAlpha = key.charAt(0) >= 'A' && key.charAt(0) <= 'Z';
 		if (key.length() == 1 && isAlpha) {
 			boolean isShift = lastKey.equals("Shift");
@@ -56,11 +55,12 @@ public class keyStroke implements NativeKeyListener {
 		} else {
 			addTofeed = key;
 		}
-		
+
 		op.add(addTofeed);
 		lastVisit = System.currentTimeMillis();
 		this.lastKey = key;
-		mFeed.append(addTofeed);
+		if (!addTofeed.equals("Shift"))
+			mFeed.append(addTofeed);
 	}
 
 	@Override

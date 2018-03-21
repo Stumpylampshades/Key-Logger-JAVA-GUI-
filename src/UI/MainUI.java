@@ -1,5 +1,6 @@
 package UI;
 
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -30,7 +31,7 @@ public class MainUI {
 
 	private JFrame frame;
 	private JTextField pathSelected;
-	private JButton btnStop, btnStart, btnBrowse, btnClearFeed, btnResetFrequencies;
+	private JButton btnStop, btnStart, btnBrowse, btnClearFeed, btnResetFrequencies, btnLog;
 	private keyStroke ks;
 	private JTextArea mFeed;
 	private FileReadWrite op;
@@ -105,6 +106,7 @@ public class MainUI {
 					}
 					pathSelected.setText(fc.getSelectedFile().getAbsolutePath());
 					btnStart.setEnabled(true);
+					btnLog.setEnabled(true);
 				} catch (Exception e2) {
 				}
 			}
@@ -114,7 +116,7 @@ public class MainUI {
 		// ****START BUTTON****
 		btnStart = new JButton("START");
 		btnStart.setEnabled(false);
-		btnStart.setBounds(366, 108, 89, 23);
+		btnStart.setBounds(335, 108, 89, 23);
 		btnStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -135,7 +137,7 @@ public class MainUI {
 		// ****STOP BUTTON***
 		btnStop = new JButton("PAUSE");
 		btnStop.setEnabled(false);
-		btnStop.setBounds(519, 108, 89, 23);
+		btnStop.setBounds(444, 108, 89, 23);
 		btnStop.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -146,16 +148,20 @@ public class MainUI {
 		});
 		frame.getContentPane().add(btnStop);
 
+		// ****RESET BUTTON***
 		btnResetFrequencies = new JButton("RESET FREQUENCIES");
 		btnResetFrequencies.setBounds(392, 169, 190, 29);
 		btnResetFrequencies.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				op.destroy();
+				int sure = JOptionPane.showConfirmDialog(null, "Are you sure? It will delete all previous data!");
+				if (sure == JOptionPane.YES_OPTION)
+					op.destroy();
 			}
 		});
 		frame.getContentPane().add(btnResetFrequencies);
 
+		// ****CLEAR FEED BUTTON***
 		btnClearFeed = new JButton("CLEAR FEED");
 		btnClearFeed.setBounds(392, 222, 190, 29);
 		frame.getContentPane().add(btnClearFeed);
@@ -192,6 +198,21 @@ public class MainUI {
 		lblFeed.setBounds(10, 262, 630, 34);
 		frame.getContentPane().add(lblFeed);
 
-	}
+		// ****LOG BUTTON***
+		btnLog = new JButton("LOG");
+		btnLog.setBounds(551, 108, 89, 23);
+		btnLog.setEnabled(false);
+		frame.getContentPane().add(btnLog);
+		btnLog.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Desktop d = Desktop.getDesktop();
+					d.open(new File(pathSelected.getText() + "//keyStrokes.txt"));
+				} catch (Exception exp) {
+				}
+			}
+		});
 
+	}
 }
