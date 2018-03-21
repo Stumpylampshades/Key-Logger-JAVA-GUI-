@@ -3,6 +3,7 @@ package UI;
 import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -79,9 +80,10 @@ public class MainUI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setTitle("KEY LOGGER");
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("keyIcon.png")));
 
-		JLabel lblNewLabel = new JLabel("Directory Path");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		JLabel lblNewLabel = new JLabel("Select Source Folder");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel.setBounds(335, 10, 305, 37);
 		frame.getContentPane().add(lblNewLabel);
 
@@ -93,6 +95,7 @@ public class MainUI {
 		// ****FILE EXPLORER*****
 		btnBrowse = new JButton("BROWSE");
 		btnBrowse.setBounds(543, 58, 97, 20);
+		frame.getContentPane().add(btnBrowse);
 		btnBrowse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -111,12 +114,12 @@ public class MainUI {
 				}
 			}
 		});
-		frame.getContentPane().add(btnBrowse);
 
 		// ****START BUTTON****
 		btnStart = new JButton("START");
 		btnStart.setEnabled(false);
 		btnStart.setBounds(335, 108, 89, 23);
+		frame.getContentPane().add(btnStart);
 		btnStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -132,12 +135,12 @@ public class MainUI {
 				}
 			}
 		});
-		frame.getContentPane().add(btnStart);
 
 		// ****STOP BUTTON***
 		btnStop = new JButton("PAUSE");
 		btnStop.setEnabled(false);
 		btnStop.setBounds(444, 108, 89, 23);
+		frame.getContentPane().add(btnStop);
 		btnStop.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -146,11 +149,11 @@ public class MainUI {
 				btnStop.setEnabled(false);
 			}
 		});
-		frame.getContentPane().add(btnStop);
 
 		// ****RESET BUTTON***
 		btnResetFrequencies = new JButton("RESET FREQUENCIES");
 		btnResetFrequencies.setBounds(392, 169, 190, 29);
+		frame.getContentPane().add(btnResetFrequencies);
 		btnResetFrequencies.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -159,7 +162,6 @@ public class MainUI {
 					op.destroy();
 			}
 		});
-		frame.getContentPane().add(btnResetFrequencies);
 
 		// ****CLEAR FEED BUTTON***
 		btnClearFeed = new JButton("CLEAR FEED");
@@ -169,6 +171,22 @@ public class MainUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mFeed.setText("");
+			}
+		});
+
+		// ****LOG BUTTON***
+		btnLog = new JButton("LOG");
+		btnLog.setBounds(551, 108, 89, 23);
+		btnLog.setEnabled(false);
+		frame.getContentPane().add(btnLog);
+		btnLog.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Desktop d = Desktop.getDesktop();
+					d.open(new File(pathSelected.getText() + "//keyStrokes.txt"));
+				} catch (Exception exp) {
+				}
 			}
 		});
 
@@ -197,22 +215,6 @@ public class MainUI {
 		lblFeed.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblFeed.setBounds(10, 262, 630, 34);
 		frame.getContentPane().add(lblFeed);
-
-		// ****LOG BUTTON***
-		btnLog = new JButton("LOG");
-		btnLog.setBounds(551, 108, 89, 23);
-		btnLog.setEnabled(false);
-		frame.getContentPane().add(btnLog);
-		btnLog.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					Desktop d = Desktop.getDesktop();
-					d.open(new File(pathSelected.getText() + "//keyStrokes.txt"));
-				} catch (Exception exp) {
-				}
-			}
-		});
 
 	}
 }
