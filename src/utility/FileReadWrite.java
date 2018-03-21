@@ -17,7 +17,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * @author avAnkyAnkit last modified @21-Mar-2018 @02:53:08 AM Key Logger - TODO
+ * @author avcbcoder last modified @21-Mar-2018 @02:53:08 AM Key Logger - TODO
  */
 
 public class FileReadWrite {
@@ -129,7 +129,10 @@ public class FileReadWrite {
 			JOptionPane.showMessageDialog(null, "unable to capture this key");
 		}
 	}
-
+	
+	/**
+	 * Clear the current state of table
+	 */
 	public void deleteTable() {
 		DefaultTableModel dm = (DefaultTableModel) jt.getModel();
 		int rowCount = dm.getRowCount();
@@ -139,6 +142,9 @@ public class FileReadWrite {
 		}
 	}
 	
+	/**
+	 * Compeletly erase all the data
+	 */
 	public void destroy(){
 		deleteTable();
 		keyMap = new HashMap<>();

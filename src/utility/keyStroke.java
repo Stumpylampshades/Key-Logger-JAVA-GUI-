@@ -12,7 +12,7 @@ import UI.MainUI;
 import sun.applet.Main;
 
 /**
- * @author avAnkyAnkit last modified @21-Mar-2018 @2:31:45 AM Key Logger - TODO
+ * @author avcbcoder last modified @21-Mar-2018 @2:31:45 AM Key Logger - TODO
  */
 
 public class keyStroke implements NativeKeyListener {
