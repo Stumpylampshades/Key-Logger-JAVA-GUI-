@@ -151,7 +151,7 @@ public class MainUI {
 		btnResetFrequencies.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				op.deleteTable();
+				op.destroy();
 			}
 		});
 		frame.getContentPane().add(btnResetFrequencies);

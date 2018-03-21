@@ -7,6 +7,9 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 import javax.swing.JOptionPane;
@@ -48,11 +51,6 @@ public class FileReadWrite {
 	}
 
 	public void add(String s) {
-		System.out.println("adding " + s);
-		DefaultTableModel model = (DefaultTableModel) jt.getModel();
-		model.addRow(new Object[] { s, "1" });
-		// model.insertRow(model, new Object[]{"",""});
-
 		try {
 			ObjectInputStream inp = new ObjectInputStream(new FileInputStream(freq));
 			HashMap<String, Integer> keys = (HashMap<String, Integer>) inp.readObject();
@@ -68,6 +66,46 @@ public class FileReadWrite {
 			e.printStackTrace();
 		}
 		addTofile(s);
+		resetTable();
+	}
+
+	/**
+	 * 
+	 */
+	private void resetTable() {
+		deleteTable();
+		HashMap<String, Integer> keys;
+		DefaultTableModel model = (DefaultTableModel) jt.getModel();
+		try {
+			ObjectInputStream inp = new ObjectInputStream(new FileInputStream(freq));
+			keys = (HashMap<String, Integer>) inp.readObject();
+			ArrayList<ForSort> al = new ArrayList<>();
+			for (String k : keys.keySet()) {
+				al.add(new ForSort(k, keys.get(k)));
+			}
+			Collections.sort(al);
+			for (ForSort f : al) {
+				model.addRow(new Object[] { f.s, f.f });
+			}
+			inp.close();
+		} catch (Exception e) {
+
+		}
+	}
+
+	public class ForSort implements Comparable<ForSort> {
+		String s;
+		int f;
+
+		public ForSort(String s, int f) {
+			this.f = f;
+			this.s = s;
+		}
+
+		@Override
+		public int compareTo(ForSort o) {
+			return o.f - this.f;
+		}
 	}
 
 	/**
@@ -78,7 +116,6 @@ public class FileReadWrite {
 		try {
 			FileWriter fileWriter = new FileWriter(keyStrokes, true);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
 			if (key.equals("Space"))
 				bufferedWriter.write(" ");
 			else if (key.equals("Enter"))
@@ -112,6 +149,18 @@ public class FileReadWrite {
 		// Remove rows one by one from the end of the table
 		for (int i = rowCount - 1; i >= 0; i--) {
 			dm.removeRow(i);
+		}
+	}
+	
+	public void destroy(){
+		deleteTable();
+		keyMap = new HashMap<>();
+		try {
+			ObjectOutputStream obj = new ObjectOutputStream(new FileOutputStream(freq));
+			obj.writeObject(keyMap);
+			obj.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

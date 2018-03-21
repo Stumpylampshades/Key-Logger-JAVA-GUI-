@@ -18,7 +18,6 @@ import sun.applet.Main;
 public class keyStroke implements NativeKeyListener {
 
 	private String lastKey = "";
-	private String[] modifier_Keys = { "Shift", "Ctrl", "Alt", "Windows" };
 	private FileReadWrite op;
 	private boolean run;
 	private long lastVisit;
@@ -34,34 +33,31 @@ public class keyStroke implements NativeKeyListener {
 
 	@Override
 	public void nativeKeyPressed(NativeKeyEvent e) {
-		
 		String addTofeed = "";
 		String key = NativeKeyEvent.getKeyText(e.getKeyCode());
-		 System.out.println("keyStroke" + key);
+		
 		if (!run)
 			return;
-
+		
 		boolean isAlpha = key.charAt(0) >= 'A' && key.charAt(0) <= 'Z';
 		if (key.length() == 1 && isAlpha) {
 			boolean isShift = lastKey.equals("Shift");
 			boolean isOn = Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
 			if ((isOn && isShift) || ((!isOn) && (!isShift))) {
 				addTofeed = key.toLowerCase();
-				op.add(key.toLowerCase());
 			} else {
 				long Delay = System.currentTimeMillis() - lastVisit;
 				if (Delay <= 500) {
 					addTofeed = key;
-					op.add(key);
 				} else {
 					addTofeed = key.toLowerCase();
-					op.add(key.toLowerCase());
 				}
 			}
 		} else {
 			addTofeed = key;
-			op.add(key);
 		}
+		
+		op.add(addTofeed);
 		lastVisit = System.currentTimeMillis();
 		this.lastKey = key;
 		mFeed.append(addTofeed);
@@ -74,20 +70,6 @@ public class keyStroke implements NativeKeyListener {
 	@Override
 	public void nativeKeyTyped(NativeKeyEvent arg0) {
 
-	}
-
-	/**
-	 * @param key
-	 * @return
-	 */
-	private boolean check(String key) {
-		if (!lastKey.equals(key))
-			return true;
-		for (String mod_key : modifier_Keys) {
-			if (key.equals(mod_key))
-				return false;
-		}
-		return true;
 	}
 
 	public void start() {
