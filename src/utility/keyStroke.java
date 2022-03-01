@@ -9,7 +9,6 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
 import UI.MainUI;
-import sun.applet.Main;
 
 /**
  * @author avcbcoder last modified @21-Mar-2018 @2:31:45 AM Key Logger - TODO
