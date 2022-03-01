@@ -24,7 +24,7 @@ public class FileReadWrite {
 	private HashMap<String, Integer> keyMap;
 	private JTable jt;
 
-	public FileReadWrite(String path, JTable jt) {
+	public FileReadWrite(String path, JTable jt) { // Sets the instance variables for the locations of the files needed.
 		this.jt = jt;
 		boolean present = false;
 		File dir = new File(path);
@@ -37,7 +37,7 @@ public class FileReadWrite {
 			}
 		}
 
-		if (!present) {
+		if (!present) { // If the files are not present, creates them.
 			keyMap = new HashMap<>();
 			try {
 				ObjectOutputStream obj = new ObjectOutputStream(new FileOutputStream(freq));
@@ -49,7 +49,7 @@ public class FileReadWrite {
 		}
 	}
 
-	public void add(String s) {
+	public void add(String s) { // This function adds to the keypress count stored
 		try {
 			ObjectInputStream inp = new ObjectInputStream(new FileInputStream(freq));
 			HashMap<String, Integer> keys = (HashMap<String, Integer>) inp.readObject();
@@ -71,7 +71,7 @@ public class FileReadWrite {
 	/**
 	 * RESET
 	 */
-	private void resetTable() {
+	private void resetTable() { // Resets the table, as well as sorting it based on keypress count.
 		deleteTable();
 		HashMap<String, Integer> keys;
 		DefaultTableModel model = (DefaultTableModel) jt.getModel();
@@ -92,7 +92,7 @@ public class FileReadWrite {
 		}
 	}
 
-	public class ForSort implements Comparable<ForSort> {
+	public class ForSort implements Comparable<ForSort> { // This class is For Sorting (ForSort) so that the arraylist is sorted by the number of keypresses. 
 		String s;
 		int f;
 
@@ -110,7 +110,7 @@ public class FileReadWrite {
 	/**
 	 * @param key
 	 */
-	public void addTofile(String key) {
+	public void addTofile(String key) { // Adds to the file for tracking the keys typed as a long string.
 		if(key.equals("Shift"))
 			return;
 		try {
