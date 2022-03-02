@@ -15,13 +15,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import org.jnativehook.keyboard.NativeKeyEvent;
+
 /**
  * @author avcbcoder last modified @21-Mar-2018 @02:53:08 AM Key Logger - TODO
  */
 
 public class FileReadWrite {
 	private String freq, keyStrokes;
-	private HashMap<String, Integer> keyMap;
+	private HashMap<Integer, CountTimeAndKey> keyMap;
 	private JTable jt;
 
 	public FileReadWrite(String path, JTable jt) { // Sets the instance variables for the locations of the files needed.
@@ -49,14 +51,20 @@ public class FileReadWrite {
 		}
 	}
 
-	public void add(String s) { // This function adds to the keypress count stored
+		public void add(int keyCode, String key) { // This function adds to the keypress count stored
 		try {
+			CountTimeAndKey ctk;
 			ObjectInputStream inp = new ObjectInputStream(new FileInputStream(freq));
-			HashMap<String, Integer> keys = (HashMap<String, Integer>) inp.readObject();
-			if (keys.containsKey(s))
-				keys.put(s, keys.get(s) + 1);
-			else
-				keys.put(s, 1);
+			HashMap<Integer, CountTimeAndKey> keys = (HashMap<Integer, CountTimeAndKey>) inp.readObject();
+			if (keys.containsKey(keyCode)) {
+				ctk = keys.get(keyCode);
+				ctk.count++;
+				keys.put(keyCode, ctk);
+			}
+			else {
+				ctk = new CountTimeAndKey(key);
+				keys.put(keyCode, ctk);
+			}
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(freq));
 			out.writeObject(keys);
 			out.close();
@@ -64,8 +72,25 @@ public class FileReadWrite {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		addTofile(s);
+		addTofile(key);
 		resetTable();
+	}
+
+	public void addTime(int keyCode, long timeToAdd) {
+		try {
+			CountTimeAndKey ctk;
+			ObjectInputStream inp = new ObjectInputStream(new FileInputStream(freq));
+			HashMap<Integer, CountTimeAndKey> keys = (HashMap<Integer, CountTimeAndKey>) inp.readObject();
+			ctk = keys.get(keyCode);
+			ctk.time += timeToAdd;
+			keys.put(keyCode, ctk);
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(freq));
+			out.writeObject(keys);
+			out.close();
+			inp.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -73,37 +98,22 @@ public class FileReadWrite {
 	 */
 	private void resetTable() { // Resets the table, as well as sorting it based on keypress count.
 		deleteTable();
-		HashMap<String, Integer> keys;
+		HashMap<Integer, CountTimeAndKey> keys;
 		DefaultTableModel model = (DefaultTableModel) jt.getModel();
 		try {
 			ObjectInputStream inp = new ObjectInputStream(new FileInputStream(freq));
-			keys = (HashMap<String, Integer>) inp.readObject();
-			ArrayList<ForSort> al = new ArrayList<>();
-			for (String k : keys.keySet()) {
-				al.add(new ForSort(k, keys.get(k)));
+			keys = (HashMap<Integer, CountTimeAndKey>) inp.readObject();
+			ArrayList<CountTimeAndKey> al = new ArrayList<>();
+			for (Integer k : keys.keySet()) {
+				al.add(keys.get(k));
 			}
 			Collections.sort(al);
-			for (ForSort f : al) {
-				model.addRow(new Object[] { f.s, f.f });
+			for (CountTimeAndKey ctk : al) {
+				model.addRow(new Object[] { ctk.key, ctk.count, String.format("%1$tQ", ctk.time.longValue()) });
 			}
 			inp.close();
 		} catch (Exception e) {
-
-		}
-	}
-
-	public class ForSort implements Comparable<ForSort> { // This class is For Sorting (ForSort) so that the arraylist is sorted by the number of keypresses. 
-		String s;
-		int f;
-
-		public ForSort(String s, int f) {
-			this.f = f;
-			this.s = s;
-		}
-
-		@Override
-		public int compareTo(ForSort o) {
-			return o.f - this.f;
+			e.printStackTrace();
 		}
 	}
 

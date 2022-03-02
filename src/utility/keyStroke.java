@@ -2,6 +2,7 @@ package utility;
 
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
 
 import javax.swing.JTextArea;
 
@@ -21,6 +22,7 @@ public class keyStroke implements NativeKeyListener {
 	private boolean run;
 	private long lastVisit;
 	private JTextArea mFeed;
+	private HashMap<Integer,TimeAndUp> pressTime = new HashMap<>();
 
 	public keyStroke(String path, FileReadWrite op, JTextArea mFeed) {
 		this.op = op;
@@ -29,8 +31,28 @@ public class keyStroke implements NativeKeyListener {
 		lastVisit = System.currentTimeMillis();
 	}
 
+	public class TimeAndUp {
+		long time;
+		boolean pressed = false;
+	}
+
 	@Override
 	public void nativeKeyPressed(NativeKeyEvent e) {
+		TimeAndUp tau;
+		if(pressTime.containsKey(e.getKeyCode())) {
+			tau = pressTime.get(e.getKeyCode());
+			if(!tau.pressed) {
+				tau.pressed = true;
+				tau.time = e.getWhen();
+				pressTime.put(e.getKeyCode(), tau);
+			}
+		}
+		else {
+			tau = new TimeAndUp();
+			tau.pressed = true;
+			tau.time = e.getWhen();
+			pressTime.put(e.getKeyCode(), tau);
+		}
 		String addTofeed = "";
 		String key = NativeKeyEvent.getKeyText(e.getKeyCode());
 
@@ -55,7 +77,7 @@ public class keyStroke implements NativeKeyListener {
 			addTofeed = key;
 		}
 
-		op.add(addTofeed);
+		op.add(e.getKeyCode(), addTofeed);
 		lastVisit = System.currentTimeMillis();
 		this.lastKey = key;
 		if (!addTofeed.equals("Shift"))
@@ -64,6 +86,12 @@ public class keyStroke implements NativeKeyListener {
 
 	@Override
 	public void nativeKeyReleased(NativeKeyEvent arg0) {
+		TimeAndUp tau = pressTime.get(arg0.getKeyCode());
+		long timeUp = arg0.getWhen();
+		long timeToAdd = timeUp - tau.time;
+		op.addTime(arg0.getKeyCode(), timeToAdd);
+		tau.pressed = false;
+		pressTime.put(arg0.getKeyCode(), tau);
 	}
 
 	@Override

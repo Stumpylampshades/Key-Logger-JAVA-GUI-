@@ -205,6 +205,7 @@ public class MainUI {
 		DefaultTableModel model = new DefaultTableModel();
 		model.addColumn("KEY");
 		model.addColumn("HITS");
+		model.addColumn("TIME");
 		jt = new JTable(model);
 
 		JScrollPane scrollPane = new JScrollPane(jt);
